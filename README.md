@@ -21,16 +21,13 @@ where date(p.payment_date) = '2005-07-30' and p.payment_date = r.rental_date and
   
 - оптимизируйте запрос: внесите корректировки по использованию операторов, при необходимости добавьте индексы.
 
-не понимаю как работает эта конструкция: ``` over (partition by c.customer_id, f.title) ``` и как она пропускает через условие ``` p.payment_date = r.rental_date ``` таких дат одинаковых вообще нет в БД.
-
-Это запрос показывает теже 200 строк и теже результаты что и код в задании, но время меньше секунды.
-
 ```
-SELECT concat(c.last_name, ' ', c.first_name), SUM(p.amount)
+SELECT concat(c.last_name, ' ', c.first_name), SUM(p.amount), date(r.rental_date), date(r.return_date)
 from customer c
+INNER JOIN rental r ON c.customer_id = r.rental_id
 INNER JOIN payment p ON p.customer_id = c.customer_id 
 where date(p.payment_date) = '2005-07-30'
-GROUP BY concat(c.last_name, ' ', c.first_name)
+GROUP BY c.customer_id, concat(c.last_name, ' ', c.first_name), date(r.rental_date), date(r.return_date)
 ```
 
 ## Дополнительные задания (со звёздочкой*)
