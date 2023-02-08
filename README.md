@@ -22,12 +22,12 @@ where date(p.payment_date) = '2005-07-30' and p.payment_date = r.rental_date and
 - оптимизируйте запрос: внесите корректировки по использованию операторов, при необходимости добавьте индексы.
 
 ```
-SELECT concat(c.last_name, ' ', c.first_name), SUM(p.amount), date(r.rental_date), date(r.return_date)
+SELECT concat(c.last_name, ' ', c.first_name), SUM(p.amount)
 from customer c
-INNER JOIN rental r ON c.customer_id = r.rental_id
 INNER JOIN payment p ON p.customer_id = c.customer_id 
-where date(p.payment_date) = '2005-07-30'
-GROUP BY c.customer_id, concat(c.last_name, ' ', c.first_name), date(r.rental_date), date(r.return_date)
+INNER JOIN rental r ON r.rental_date  = p.payment_date
+where date(p.payment_date) = '2005-07-30' and date(p.payment_date) = date(r.rental_date)
+GROUP BY c.customer_id, concat(c.last_name, ' ', c.first_name)
 ```
 
 ## Дополнительные задания (со звёздочкой*)
